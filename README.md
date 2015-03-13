@@ -11,7 +11,8 @@
 5. [Why I need to provide my own `ConnectionMultiplexer` to StackRedis.AspNet.Identity? Even better... What's a `ConnectionMultiplexer`?](#v-why-i-need-to-provide-my-own-connectionmultiplexer-to-stackredisaspnetidentity-even-better-whats-a-connectionmultiplexer)
 6. [Configuration](#vi-configuration)
 7. [Architecture](#vii-architecture)
-8. [Who's behind this project?](#viii-whos-behind-this-project)
+8. [Improving StackRedis.AspNet.Identity to meet concrete project requirements](#viii-improving-stackredisaspnetidentity-to-meet-concrete-project-requirements)
+9. [Who's behind this project?](#ix-whos-behind-this-project)
 
 ## I. Introduction
 
@@ -57,9 +58,9 @@ If you create a new ASP.NET MVC 5 project and you choose either to create a Web 
 <span id="sr-aspnet-identity-v"></span>
 ## V. Why I need to provide my own `ConnectionMultiplexer` to StackRedis.AspNet.Identity? Even better... What's a `ConnectionMultiplexer`?
 
-**To the first question** (*Why I need to provide my own `ConnectionMultiplexer` to StackRedis.AspNet.Identity?*), the answer is *because **StackExchange.Redis** library uses an aggressive Redis connectivity approach and only one `ConnectionMultiplexer` should exist during an application life-cycle*.
+**To the first question** (*Why I need to provide my own `ConnectionMultiplexer` to StackRedis.AspNet.Identity?*), the answer is *because StackExchange.Redis library uses an aggressive Redis connectivity approach and only one `ConnectionMultiplexer` should exist during an application life-cycle*.
 
-Thus, *StackRedis.AspNet.Identity* doesn't create an own `ConnectionMultiplexer` and enforces developers to share the same one as the entire application. In other words: this is what you need to provide during **step 6** of [*IV. How to integrate [...]*](#iv-how-to-integrate-it-in-both-aspnet-mvc-5-and-aspnet-web-api-22-template) part of current document.
+Thus, *StackRedis.AspNet.Identity* doesn't create an own `ConnectionMultiplexer` and enforces developers to share the same one as the entire application. In other words: this is what you need to provide during **step 6** of *[IV. How to integrate [...]](#iv-how-to-integrate-it-in-both-aspnet-mvc-5-and-aspnet-web-api-22-template)* part of current document.
 
 Learn more about *why* to use `ConnectionMultiplexer` this way and actually what's this class and how to configure a connection to Redis [here (StackExchange.Redis - Basic usage)](https://github.com/StackExchange/StackExchange.Redis/blob/master/Docs/Basics.md).
 
@@ -169,7 +170,23 @@ When ASP.NET Identity requests if this setting is enabled, *StackRedis.AspNet.Id
 
 Set key name is defined by `aspNet:identity:redis:twoFactorEnabledSetKey` application setting.
 
-## VIII. Who's behind this project?
+## VIII. Improving StackRedis.AspNet.Identity to meet concrete project requirements
+
+**Every method in `RedisUserStore<TUser>` class is `virtual`**. That is, it's easy improving *StackRedis.AspNet.Identity*. 
+
+If your project has concrete requirements and it needs to improve or modify default method/property implementations, then derive `RedisUserStore<TUser>` and override its methods and properties:
+
+    public class CustomRedisUserStore<TUser> : RedisUserStore<TUser>
+        where TUser : IUser, IIdentityUser
+    {
+
+    }
+
+For example, *StackRedis.AspNet.Identity* considers that any identity can be locked out (i.e. `IUserLockoutStore<TUser, string>.GetLockoutEnabledAsync(TUser user)` implementation always returns `true`). 
+
+If your *administrators* shouldn't be locked out if they reach maximum number of failed login tries, it's easy to implement an override and prevent lockouts to administrators.
+
+## IX. Who's behind this project?
 
 Project itself is entirely maintained by [Matías Fidemraizer (follow this link to contact me on LinkedIn)](https://linkedin.com/in/mfidemraizer).
 
