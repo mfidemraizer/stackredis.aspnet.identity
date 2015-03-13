@@ -1,3 +1,5 @@
+<img src="http://mfidemraizer.github.io/stackredis.aspnet.identity/images/stackredis.aspnet.identity.png">
+
 # Welcome to StackRedis.AspNet.Identity!
 
 ## I. Introduction
