@@ -4,17 +4,15 @@
 
 ## INDEX
 
-1. [Introduction](#sr-aspnet-identity-i)
-2. [Highlights and features](#sr-aspnet-identity-ii)
-3. [How to install it](#sr-aspnet-identity-iii)
-4. [How to integrate it in both ASP.NET MVC 5 and ASP.NET Web API 2.2 template](#sr-aspnet-identity-iv)
-5. [Why I need to provide my own `ConnectionMultiplexer` to StackRedis.AspNet.Identity? Even better... What's a `ConnectionMultiplexer`?](#sr-aspnet-identity-v)
-6. [Configuration](#sr-aspnet-identity-vi)
-7. [Architecture](#sr-aspnet-identity-vii)
-8. [Who's behind this project?](#sr-aspnet-identity-viii)
+1. [Introduction](#i-introduction)
+2. [Highlights and features](#ii-higlights-and-features)
+3. [How to install it](#iii-how-to-install-it)
+4. [How to integrate it in both ASP.NET MVC 5 and ASP.NET Web API 2.2 template](#iv-how-to-integrate-it-in-both-aspnet-mvc-5-and-aspnet-web-api-22-template)
+5. [Why I need to provide my own `ConnectionMultiplexer` to StackRedis.AspNet.Identity? Even better... What's a `ConnectionMultiplexer`?](#v-why-i-need-to-provide-my-own-connectionmultiplexer-to-stackredisaspnetidentity-even-better-whats-a-connectionmultiplexer)
+6. [Configuration](#vi-configuration)
+7. [Architecture](#vii-architecture)
+8. [Who's behind this project?](#viii-whos-behind-this-project)
 
-
-<span id="sr-aspnet-identity-i"></span>
 ## I. Introduction
 
 This is an open source ASP.NET Identity 2.x-compliant custom user store implementation to *Redis* using the fancy [StackExchange.Redis](https://github.com/StackExchange/StackExchange.Redis) library.
@@ -25,7 +23,6 @@ Also, if you find any problem while using this library, please fill a new issue 
 
 Finally, if you want to contact the author directly, you can do it on LinkedIn - add *Matías Fidemraizer* to your contacts -.
 
-<span id="sr-aspnet-identity-ii"></span>
 ## II. Higlights and features
 
 - It's built on top of free and open source [StackExchange.Redis](https://github.com/StackExchange/StackExchange.Redis) library empowering StackExchange *Redis* connectivity, made by Marc Gravell.
@@ -33,16 +30,14 @@ Finally, if you want to contact the author directly, you can do it on LinkedIn -
 - As it uses *Redis* as primary data store, ASP.NET Identitity meets the **lightspeed**.
 - It seamlessly-integrates with both ASP.NET MVC 5 MVC and WebAPI templates.
 
-<span id="sr-aspnet-identity-iii"></span>
 ## III. How to install it
 
-*StackRedis.AspNet.Identity* is delivered as a *NuGet* package. 
+*StackRedis.AspNet.Identity* is delivered as a [*NuGet*](http://www.nuget.org/packages/StackRedis.AspNet.Identity) package. 
 
 - Install it using Visual Studio's Package Manager Console: `Install-Package StackRedis.AspNet.Identity`.
 - Install it using Visual Studio's GUI (go to *Manage NuGet Packages* in your Visual Studio solution).
 
 
-<span id="sr-aspnet-identity-iv"></span>
 ## IV. How to integrate it in both ASP.NET MVC 5 and ASP.NET Web API 2.2 template
 
 If you create a new ASP.NET MVC 5 project and you choose either to create a Web site or a Web API, and you select *"Individual user accounts"* as authentication method, integrating *StackRedis.AspNet.Identity* becomes extremely easy:
@@ -54,21 +49,20 @@ If you create a new ASP.NET MVC 5 project and you choose either to create a Web 
 
     var manager = new ApplicationUserManager(new UserStore<ApplicationUser>(context.Get<ApplicationDbContext>()));
 5. Replace `new UserStore<ApplicationUser>(context.Get<ApplicationDbContext>()));` with `new RedisUserStore<ApplicationUser>()`.
-6. Now there's a compilation error, as `RedisUserStore` has a constructor which requires a `ConnectionMultiplexer` instance as argument. You should read how to provide it [here](#sr-aspnet-identity-v).
+6. Now there's a compilation error, as `RedisUserStore` has a constructor which requires a `ConnectionMultiplexer` instance as argument. You should read how to provide it [here](#v-why-i-need-to-provide-my-own-connectionmultiplexer-to-stackredisaspnetidentity-even-better-whats-a-connectionmultiplexer).
 7. Go to `Models\IdentityModels.cs`, open it and locate `ApplicationUser` class.
 8. `ApplicationUser` needs to implement `StackRedis.AspNet.Identity.IIdentityUser` interface to work with *StackRedis.AspNet.Identity*. In the other hand, this library provides a class which can be used as base class `StackRedis.AspNet.Identity.IdentityUser` which both implements `IIdentityUser` and `IUser` from ASP.NET Identity.
-9. Finally, there are some application settings that should be provided in application's configuration file (i.e. `Web.config`, `App.config`...). See [VI. Configuration](#sr-aspnet-identity-vi).
+9. Finally, there are some application settings that should be provided in application's configuration file (i.e. `Web.config`, `App.config`...). See [VI. Configuration](#vi-configuration).
 
 <span id="sr-aspnet-identity-v"></span>
 ## V. Why I need to provide my own `ConnectionMultiplexer` to StackRedis.AspNet.Identity? Even better... What's a `ConnectionMultiplexer`?
 
 **To the first question** (*Why I need to provide my own `ConnectionMultiplexer` to StackRedis.AspNet.Identity?*), the answer is *because **StackExchange.Redis** library uses an aggressive Redis connectivity approach and only one `ConnectionMultiplexer` should exist during an application life-cycle*.
 
-Thus, *StackRedis.AspNet.Identity* doesn't create an own `ConnectionMultiplexer` and enforces developers to share the same one as the entire application. In other words: this is what you need to provide during **step 6** of [*IV. How to integrate [...]*](#sr-aspnet-identity-iv) part of current document.
+Thus, *StackRedis.AspNet.Identity* doesn't create an own `ConnectionMultiplexer` and enforces developers to share the same one as the entire application. In other words: this is what you need to provide during **step 6** of [*IV. How to integrate [...]*](#iv-how-to-integrate-it-in-both-aspnet-mvc-5-and-aspnet-web-api-22-template) part of current document.
 
 Learn more about *why* to use `ConnectionMultiplexer` this way and actually what's this class and how to configure a connection to Redis [here (StackExchange.Redis - Basic usage)](https://github.com/StackExchange/StackExchange.Redis/blob/master/Docs/Basics.md).
 
-<span id="sr-aspnet-identity-vi"></span>
 ## VI. Configuration
 
 *StackRedis.AspNet.Redis* requires some `<appSettings>` to be provided in your `App.config` or `Web.config`. There're no default values to any of required settings excluding `aspNet:identity:redis:db`:
@@ -107,7 +101,6 @@ Full configuration sample:
       <add key="aspNet:identity:redis:twoFactorEnabledHashKey" value="stackredis:identity:users:twofactorauthenabled"/>
 	</appSettings>
 
-<span id="sr-aspnet-identity-vii"></span>
 ## VII. Architecture
 
 *StackRedis.AspNet.Identity* stores data using Redis-specific data structures.
@@ -176,7 +169,6 @@ When ASP.NET Identity requests if this setting is enabled, *StackRedis.AspNet.Id
 
 Set key name is defined by `aspNet:identity:redis:twoFactorEnabledSetKey` application setting.
 
-<span id="sr-aspnet-identity-viii"></span>
 ## VIII. Who's behind this project?
 
 Project itself is entirely maintained by [Matías Fidemraizer (follow this link to contact me on LinkedIn)](https://linkedin.com/in/mfidemraizer).
