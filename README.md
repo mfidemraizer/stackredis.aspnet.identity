@@ -2,10 +2,30 @@
 
 # Welcome to StackRedis.AspNet.Identity!
 
+## INDEX
+
+1. [Introduction](#sr-aspnet-identity-i)
+2. [Highlights and features](#sr-aspnet-identity-ii)
+3. [How to install it](#sr-aspnet-identity-iii)
+4. [How to integrate it in both ASP.NET MVC 5 and ASP.NET Web API 2.2 template](#sr-aspnet-identity-iv)
+5. [Why I need to provide my own `ConnectionMultiplexer` to StackRedis.AspNet.Identity? Even better... What's a `ConnectionMultiplexer`?](#sr-aspnet-identity-v)
+6. [Configuration](#sr-aspnet-identity-vi)
+7. [Architecture](#sr-aspnet-identity-vii)
+8. [Who's behind this project?](#sr-aspnet-identity-viii)
+
+
+<span id="sr-aspnet-identity-i"></span>
 ## I. Introduction
 
 This is an open source ASP.NET Identity 2.x-compliant custom user store implementation to *Redis* using the fancy [StackExchange.Redis](https://github.com/StackExchange/StackExchange.Redis) library.
 
+**Contributions are absolutely welcomed and they're valuable!**. Create your own fork and do a *pull request* to merge your enhancements, fixes or new features!
+
+Also, if you find any problem while using this library, please fill a new issue here in GitHub's repository and it'll be addressed as soon as possible.
+
+Finally, if you want to contact the author directly, you can do it on LinkedIn - add *Matías Fidemraizer* to your contacts -.
+
+<span id="sr-aspnet-identity-ii"></span>
 ## II. Higlights and features
 
 - It's built on top of free and open source [StackExchange.Redis](https://github.com/StackExchange/StackExchange.Redis) library empowering StackExchange *Redis* connectivity, made by Marc Gravell.
@@ -13,6 +33,7 @@ This is an open source ASP.NET Identity 2.x-compliant custom user store implemen
 - As it uses *Redis* as primary data store, ASP.NET Identitity meets the **lightspeed**.
 - It seamlessly-integrates with both ASP.NET MVC 5 MVC and WebAPI templates.
 
+<span id="sr-aspnet-identity-iii"></span>
 ## III. How to install it
 
 *StackRedis.AspNet.Identity* is delivered as a *NuGet* package. 
@@ -47,6 +68,7 @@ Thus, *StackRedis.AspNet.Identity* doesn't create an own `ConnectionMultiplexer`
 
 Learn more about *why* to use `ConnectionMultiplexer` this way and actually what's this class and how to configure a connection to Redis [here (StackExchange.Redis - Basic usage)](https://github.com/StackExchange/StackExchange.Redis/blob/master/Docs/Basics.md).
 
+<span id="sr-aspnet-identity-vi"></span>
 ## VI. Configuration
 
 *StackRedis.AspNet.Redis* requires some `<appSettings>` to be provided in your `App.config` or `Web.config`. There're no default values to any of required settings excluding `aspNet:identity:redis:db`:
@@ -85,6 +107,7 @@ Full configuration sample:
       <add key="aspNet:identity:redis:twoFactorEnabledHashKey" value="stackredis:identity:users:twofactorauthenabled"/>
 	</appSettings>
 
+<span id="sr-aspnet-identity-vii"></span>
 ## VII. Architecture
 
 *StackRedis.AspNet.Identity* stores data using Redis-specific data structures.
@@ -152,3 +175,14 @@ This user setting is stored in a Redis set. This set contains the user identifie
 When ASP.NET Identity requests if this setting is enabled, *StackRedis.AspNet.Identity* checks if user's identifier is a member of the so-called set.
 
 Set key name is defined by `aspNet:identity:redis:twoFactorEnabledSetKey` application setting.
+
+<span id="sr-aspnet-identity-viii"></span>
+## VIII. Who's behind this project?
+
+Project itself is entirely maintained by [Matías Fidemraizer (follow this link to contact me on LinkedIn)](https://linkedin.com/in/mfidemraizer).
+
+Also, I'm a big fan of [StackOverflow](http://stackoverflow.com) and I'll enjoy answering any question about this library!
+
+<a href="http://stackoverflow.com/users/411632/mat%c3%adas-fidemraizer">
+<img src="http://stackoverflow.com/users/flair/411632.png?theme=clean" width="208" height="58" alt="profile for Mat&#237;as Fidemraizer at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for Mat&#237;as Fidemraizer at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+</a>
