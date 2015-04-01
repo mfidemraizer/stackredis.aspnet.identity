@@ -99,7 +99,7 @@ Full configuration sample:
       <add key="aspNet:identity:redis:userRoleSetKey" value="stackredis:identity:users:{0}:roles"/>
       <add key="aspNet:identity:redis:userLoginSetKey" value="stackredis:identity:users:{0}:logins"/>
       <add key="aspNet:identity:redis:userClaimSetKey" value="stackredis:identity:users:{0}:claims"/>
-      <add key="aspNet:identity:redis:twoFactorEnabledHashKey" value="stackredis:identity:users:twofactorauthenabled"/>
+      <add key="aspNet:identity:redis:twoFactorEnabledSetKey" value="stackredis:identity:users:twofactorauthenabled"/>
 	</appSettings>
 
 ## VII. Architecture
