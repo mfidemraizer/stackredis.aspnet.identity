@@ -81,7 +81,7 @@ Learn more about *why* to use `ConnectionMultiplexer` this way and actually what
 - Provides the Redis set key name to store each user's assigned security roles. `{0}` placeholder gets some user identifier. Example: `<add key="aspNet:identity:redis:userRoleSetKey" value="stackredis:identity:users:{0}:roles"/>`.
 - Provides the Redis set key name to store each user's assigned logins. `{0}` placeholder gets some user identifier. Example: `<add key="aspNet:identity:redis:userLoginSetKey" value="stackredis:identity:users:{0}:logins"/>`.
 - Provides the Redis set key name to store each user's assigned security claims. `{0}` placeholder gets some user identifier. Example: `<add key="aspNet:identity:redis:userClaimSetKey" value="stackredis:identity:users:{0}:claims"/>`.
-- Provides the Redis hash key name to store if an user has two-factor authentication enabled. Example: `<add key="aspNet:identity:redis:twoFactorEnabledHashKey" value="stackredis:identity:users:twofactorauthenabled"/>`.
+- Provides the Redis set key name to store if an user has two-factor authentication enabled. Example: `<add key="aspNet:identity:redis:twoFactorEnabledSetKey" value="stackredis:identity:users:twofactorauthenabled"/>`.
 
 Full configuration sample:
 
