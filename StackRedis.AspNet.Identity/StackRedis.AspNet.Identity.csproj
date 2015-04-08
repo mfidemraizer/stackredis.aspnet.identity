@@ -51,6 +51,10 @@
     <Compile Include="IdentityUser.cs" />
     <Compile Include="IdentityUserClaim.cs" />
     <Compile Include="IIdentityUser.cs" />
+    <Compile Include="OAuth\IOAuthClient.cs" />
+    <Compile Include="OAuth\OAuthClient.cs" />
+    <Compile Include="OAuth\OAuthClientStore.cs" />
+    <Compile Include="OAuth\OAuthGrantType.cs" />
     <Compile Include="RedisUserStore.cs" />
     <Compile Include="RedisUserStore.IUserTwoFactorStore.cs" />
     <Compile Include="RedisUserStore.IUserClaimStore.cs" />

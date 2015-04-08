@@ -43,7 +43,17 @@ namespace StackRedis.AspNet.Identity
 
         public virtual async Task<DateTimeOffset> GetLockoutEndDateAsync(TUser user)
         {
-            return DateTimeOffset.FromFileTime(long.Parse(await Database.HashGetAsync(UserLockDateHashKey, ((IUser)user).Id)));
+            string rawLockoutEndValue = await Database.HashGetAsync(UserLockDateHashKey, ((IUser)user).Id);
+            long lockoutEndValue;
+
+            if(long.TryParse(rawLockoutEndValue, out lockoutEndValue))
+            {
+                return DateTimeOffset.FromFileTime(lockoutEndValue);
+            }
+            else
+            {
+                return DateTimeOffset.MinValue;
+            }
         }
 
         public virtual async Task<int> IncrementAccessFailedCountAsync(TUser user)
