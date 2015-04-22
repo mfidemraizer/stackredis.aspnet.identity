@@ -44,6 +44,10 @@ namespace StackRedis.AspNet.Identity
         public virtual async Task<DateTimeOffset> GetLockoutEndDateAsync(TUser user)
         {
             string rawLockoutEndValue = await Database.HashGetAsync(UserLockDateHashKey, ((IUser)user).Id);
+
+            if (string.IsNullOrWhiteSpace(rawLockoutEndValue))
+              return DateTimeOffset.MinValue;
+
             long lockoutEndValue;
 
             if(long.TryParse(rawLockoutEndValue, out lockoutEndValue))
