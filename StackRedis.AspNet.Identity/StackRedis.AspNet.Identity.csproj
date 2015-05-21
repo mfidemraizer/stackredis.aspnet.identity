@@ -51,6 +51,7 @@
     <Compile Include="IdentityUser.cs" />
     <Compile Include="IdentityUserClaim.cs" />
     <Compile Include="IIdentityUser.cs" />
+    <Compile Include="OAuth\IReadOnlyOAuthClient.cs" />
     <Compile Include="OAuth\IOAuthClient.cs" />
     <Compile Include="OAuth\OAuthClient.cs" />
     <Compile Include="OAuth\OAuthClientStore.cs" />

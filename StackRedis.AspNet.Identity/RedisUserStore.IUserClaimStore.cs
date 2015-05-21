@@ -34,8 +34,43 @@ namespace StackRedis.AspNet.Identity
 
         public virtual async Task<IList<Claim>> GetClaimsAsync(TUser user)
         {
+            var serializableClaim = new
+            {
+                Issuer = string.Empty,
+                OriginalIssuer = string.Empty,
+                Properties = new Dictionary<string, string>(),
+                Subject = new ClaimsIdentity(),
+                Type = string.Empty,
+                Value = string.Empty,
+                ValueType = string.Empty
+            };
+
             return (IList<Claim>)(await Database.SetMembersAsync(string.Format(UserClaimSetKey, ((IUser)user).Id)))
-                                            .Select(rawClaim => JsonConvert.DeserializeObject<Claim>(rawClaim))
+                                            .Select
+                                            (
+                                                rawClaim =>
+                                                {
+                                                    var deserialized = JsonConvert.DeserializeAnonymousType(rawClaim, serializableClaim);
+
+                                                    Claim claim = new Claim
+                                                    (
+                                                        deserialized.Type,
+                                                        deserialized.Value,
+                                                        deserialized.Issuer,
+                                                        deserialized.OriginalIssuer
+                                                    );
+
+                                                    if (deserialized.Properties != null && deserialized.Properties.Count > 0)
+                                                    {
+                                                        foreach (string propertyName in deserialized.Properties.Keys)
+                                                        {
+                                                            claim.Properties.Add(propertyName, deserialized.Properties[propertyName]);
+                                                        }
+                                                    }
+
+                                                    return claim;
+                                                }
+                                            )
                                             .ToList();
         }
 

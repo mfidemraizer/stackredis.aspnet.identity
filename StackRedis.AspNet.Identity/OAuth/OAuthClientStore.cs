@@ -4,27 +4,30 @@
     using Newtonsoft.Json;
     using StackExchange.Redis;
     using System;
+    using System.Collections.Immutable;
     using System.Configuration;
     using System.Diagnostics.Contracts;
+    using System.Linq;
     using System.Security.Cryptography;
-    using System.Text;
     using System.Threading.Tasks;
 
-    public class OAuthClientManager<TClient>
+    public class OAuthClientStore<TClient> : IDisposable
         where TClient : IOAuthClient, new()
     {
         private readonly ConnectionMultiplexer _multiplexer;
 
-        public OAuthClientManager(ConnectionMultiplexer multiplexer)
+        public OAuthClientStore(ConnectionMultiplexer multiplexer)
         {
             Contract.Requires(multiplexer != null, "ConnectionMultiplexer is mandatory");
-            Contract.Assert(!string.IsNullOrEmpty(ClientHash), "Application configuration file has not provided OAuth client store hash Redis key name");
+            Contract.Assert(!string.IsNullOrEmpty(ClientHashKey), "Application configuration file has not provided OAuth client store hash Redis key name");
+            Contract.Assert(!string.IsNullOrEmpty(ClientsByUserSetKey), "Application configuration file has not provided OAuth client store hash Redis key name");
 
             _multiplexer = multiplexer;
         }
 
         private ConnectionMultiplexer ConnectionMultiplexer { get { return _multiplexer; } }
-        private string ClientHash { get { return ConfigurationManager.AppSettings["aspNet:identity:oauth:redis:clientHash"]; } }
+        private string ClientHashKey { get { return ConfigurationManager.AppSettings["aspNet:identity:oauth:redis:clientHashKey"]; } }
+        private string ClientsByUserSetKey { get { return ConfigurationManager.AppSettings["aspNet:identity:oauth:redis:clientsByUserSetKey"]; } }
 
         protected virtual int DbNumber
         {
@@ -43,32 +46,53 @@
             get { return ConnectionMultiplexer.GetDatabase(DbNumber); }
         }
 
-        public virtual async Task<TClient> RegisterClientAsync(string name, OAuthGrantType grantType, Func<string> getSecretWordToBuildClientHash)
+        public virtual async Task<TClient> RegisterClientAsync(string ownerUserName, string name, OAuthGrantType grantType)
         {
             Contract.Requires(!string.IsNullOrEmpty(name));
-            Contract.Requires(getSecretWordToBuildClientHash != null);
 
             TClient client = new TClient();
+
+            client.GrantType = grantType;
 
             using (RijndaelManaged cryptoManager = new RijndaelManaged())
             {
                 cryptoManager.GenerateKey();
+                client.Id = BitConverter.ToString(cryptoManager.Key).Replace("-", string.Empty).ToLowerInvariant();
 
-                client.Id = Encoding.UTF8.GetString(cryptoManager.Key);
+                cryptoManager.GenerateKey();
+                client.Secret = BitConverter.ToString(cryptoManager.Key).Replace("-", string.Empty).ToLowerInvariant();
             }
 
             client.Name = name;
-            client.ClientSecretHash = new PasswordHasher().HashPassword(getSecretWordToBuildClientHash());
+            client.SecretHash = new PasswordHasher().HashPassword(client.Secret);
             client.DateAdded = DateTimeOffset.Now;
 
-            await Database.HashSetAsync(ClientHash, new[] { new HashEntry(client.Id, JsonConvert.SerializeObject(client)) });
+            ITransaction transaction = Database.CreateTransaction();
+
+            transaction.HashSetAsync(ClientHashKey, new[] { new HashEntry(client.Id, JsonConvert.SerializeObject(client)) });
+            transaction.SetAddAsync(string.Format(ClientsByUserSetKey, ownerUserName), client.Id);
+
+            await transaction.ExecuteAsync();
 
             return client;
         }
 
-        public virtual async Task<TClient> GetClientById(string id)
+        public virtual async Task<TClient> GetClientByIdAsync(string id)
         {
-            return JsonConvert.DeserializeObject<TClient>(await Database.HashGetAsync(ClientHash, id));
+            return JsonConvert.DeserializeObject<TClient>(await Database.HashGetAsync(ClientHashKey, id));
+        }
+
+        public virtual async Task<ImmutableHashSet<TClient>> GetAllClientsByOwnerUserNameAsync(string ownerUserName)
+        {
+            RedisValue[] clientIds = await Database.SetMembersAsync(string.Format(ClientsByUserSetKey, ownerUserName));
+
+            return (await Database.HashGetAsync(ClientHashKey, clientIds))
+                        .Select(rawClient => JsonConvert.DeserializeObject<TClient>(rawClient))
+                        .ToImmutableHashSet(new OAuthClient.OAuthClientEqualityComparer<TClient>());
+        }
+
+        public void Dispose()
+        {
         }
     }
 }

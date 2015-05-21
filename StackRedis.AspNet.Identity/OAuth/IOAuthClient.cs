@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace StackRedis.AspNet.Identity.OAuth
+﻿namespace StackRedis.AspNet.Identity.OAuth
 {
+    using System;
+
     public interface IOAuthClient
     {
         string Id { get; set; }
         string Name { get; set; }
-        string ClientSecretHash { get; set; }
+        string Secret { get; set; }
+        string SecretHash { get; set; }
         OAuthGrantType GrantType { get; set; }
         DateTimeOffset DateAdded { get; set; }
     }
