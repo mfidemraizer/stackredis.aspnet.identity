@@ -172,7 +172,7 @@ Set key name is defined by `aspNet:identity:redis:twoFactorEnabledSetKey` applic
 
 ## VIII. Improving StackRedis.AspNet.Identity to meet concrete project requirements
 
-**Every method in `RedisUserStore<TUser>` class is `virtual`**. That is, it's easy improving *StackRedis.AspNet.Identity*. 
+**Every method in `RedisUserStore<TUser>` class is `virtual`**. That is, it's easy to improve *StackRedis.AspNet.Identity*. 
 
 If your project has concrete requirements and it needs to improve or modify default method/property implementations, then derive `RedisUserStore<TUser>` and override its methods and properties:
 
