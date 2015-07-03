@@ -24,7 +24,7 @@ Also, if you find any problem while using this library, please fill a new issue 
 
 Finally, if you want to contact the author directly, you can do it on LinkedIn - add *Matías Fidemraizer* to your contacts -.
 
-## II. Higlights and features
+## II. Highlights and features
 
 - It's built on top of free and open source [StackExchange.Redis](https://github.com/StackExchange/StackExchange.Redis) library empowering StackExchange *Redis* connectivity, made by Marc Gravell.
 - It takes advantage of *Redis* data structures like sets and hashes to ASP.NET Identity user and login data using *Redis*-specific operations.
