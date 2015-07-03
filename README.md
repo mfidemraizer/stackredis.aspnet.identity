@@ -27,7 +27,7 @@ Finally, if you want to contact the author directly, you can do it on LinkedIn -
 ## II. Highlights and features
 
 - It's built on top of free and open source [StackExchange.Redis](https://github.com/StackExchange/StackExchange.Redis) library empowering StackExchange *Redis* connectivity, made by Marc Gravell.
-- It takes advantage of *Redis* data structures like sets and hashes to ASP.NET Identity user and login data using *Redis*-specific operations.
+- It takes advantage of *Redis* data structures like sets and hashes to store ASP.NET Identity user and login data using *Redis*-specific operations.
 - As it uses *Redis* as primary data store, ASP.NET Identitity meets the **lightspeed**.
 - It seamlessly-integrates with both ASP.NET MVC 5 MVC and WebAPI templates.
 
