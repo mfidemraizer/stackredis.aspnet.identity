@@ -24,10 +24,10 @@ Also, if you find any problem while using this library, please fill a new issue 
 
 Finally, if you want to contact the author directly, you can do it on LinkedIn - add *Matías Fidemraizer* to your contacts -.
 
-## II. Higlights and features
+## II. Highlights and features
 
 - It's built on top of free and open source [StackExchange.Redis](https://github.com/StackExchange/StackExchange.Redis) library empowering StackExchange *Redis* connectivity, made by Marc Gravell.
-- It takes advantage of *Redis* data structures like sets and hashes to ASP.NET Identity user and login data using *Redis*-specific operations.
+- It takes advantage of *Redis* data structures like sets and hashes to store ASP.NET Identity user and login data using *Redis*-specific operations.
 - As it uses *Redis* as primary data store, ASP.NET Identitity meets the **lightspeed**.
 - It seamlessly-integrates with both ASP.NET MVC 5 MVC and WebAPI templates.
 
@@ -172,7 +172,7 @@ Set key name is defined by `aspNet:identity:redis:twoFactorEnabledSetKey` applic
 
 ## VIII. Improving StackRedis.AspNet.Identity to meet concrete project requirements
 
-**Every method in `RedisUserStore<TUser>` class is `virtual`**. That is, it's easy improving *StackRedis.AspNet.Identity*. 
+**Every method in `RedisUserStore<TUser>` class is `virtual`**. That is, it's easy to improve *StackRedis.AspNet.Identity*. 
 
 If your project has concrete requirements and it needs to improve or modify default method/property implementations, then derive `RedisUserStore<TUser>` and override its methods and properties:
 
