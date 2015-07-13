@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>StackRedis.AspNet.Identity</id>
-    <version>1.0.1</version>
+    <version>1.0.3</version>
     <title>StackRedis.AspNet.Identity</title>
     <authors>Matías Fidemraizer</authors>
     <owners>Matías Fidemraizer</owners>
@@ -10,9 +10,7 @@
       An open source ASP.NET Identity 2.x-compliant custom user store implementation to *Redis* using the fancy StackExchange.Redis library.
     </description>
     <releaseNotes>
-      Assembly had [AssemblyAttribute("en-US")] and this was absolutely incorrect because it's meant to be set for culture-specific satellite assemblies. 
-      
-      This has been changed to [AssemblyAttribute("")].
+      Introducing a basic implementation to store OWIN/Katana OAuth provider related data on Redis, and some minor fixes on how claims were being stored.
     </releaseNotes>
     <summary></summary>
     <language>en-US</language>

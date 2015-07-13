@@ -46,7 +46,7 @@
             get { return ConnectionMultiplexer.GetDatabase(DbNumber); }
         }
 
-        public virtual async Task<TClient> RegisterClientAsync(string ownerUserName, string name, OAuthGrantType grantType)
+        public virtual async Task<TClient> RegisterClientAsync(string ownerUserName, string name, OAuthGrantType grantType, ITransaction currentTransaction = null)
         {
             Contract.Requires(!string.IsNullOrEmpty(name));
 
@@ -67,12 +67,13 @@
             client.SecretHash = new PasswordHasher().HashPassword(client.Secret);
             client.DateAdded = DateTimeOffset.Now;
 
-            ITransaction transaction = Database.CreateTransaction();
+            ITransaction transaction = currentTransaction ?? Database.CreateTransaction();
 
             transaction.HashSetAsync(ClientHashKey, new[] { new HashEntry(client.Id, JsonConvert.SerializeObject(client)) });
             transaction.SetAddAsync(string.Format(ClientsByUserSetKey, ownerUserName), client.Id);
 
-            await transaction.ExecuteAsync();
+            if (currentTransaction == null)
+                await transaction.ExecuteAsync();
 
             return client;
         }
