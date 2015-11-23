@@ -94,8 +94,14 @@ namespace StackRedis.AspNet.Identity
             // Sets
             transaction.KeyDeleteAsync(UserLoginSetKey);
             transaction.KeyDeleteAsync(UserClaimSetKey);
-            transaction.SetRemoveAsync(UserConfirmedEmailSetKey, user.Email);
-            transaction.SetRemoveAsync(UserConfirmedPhoneNumberSetKey, user.PhoneNumber);
+            if (null != user.Email)
+            {
+                transaction.SetRemoveAsync(UserConfirmedEmailSetKey, user.Email);
+            }
+            if (null != user.PhoneNumber)
+            {
+                transaction.SetRemoveAsync(UserConfirmedPhoneNumberSetKey, user.PhoneNumber);
+            }
             transaction.SetRemoveAsync(UserClaimSetKey, userId);
             transaction.SetRemoveAsync(UserLockSetKey, userId);
 
