@@ -113,7 +113,8 @@ namespace StackRedis.AspNet.Identity
         {
             IDatabase db = Database;
 
-            return JsonConvert.DeserializeObject<TUser>(await db.HashGetAsync(UserHashByIdKey, userId));
+            var user = await db.HashGetAsync(UserHashByIdKey, userId);
+            return !user.HasValue ? null : JsonConvert.DeserializeObject<TUser>(user);
         }
 
         public virtual async Task<TUser> FindByNameAsync(string userName)
@@ -124,7 +125,7 @@ namespace StackRedis.AspNet.Identity
 
             if (!string.IsNullOrEmpty(userId))
             {
-                return JsonConvert.DeserializeObject<TUser>(await db.HashGetAsync(UserHashByIdKey, userId));
+                return await FindByIdAsync(userId);
             }
             else
             {
