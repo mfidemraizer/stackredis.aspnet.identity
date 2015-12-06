@@ -94,8 +94,14 @@ namespace StackRedis.AspNet.Identity
             // Sets
             transaction.KeyDeleteAsync(UserLoginSetKey);
             transaction.KeyDeleteAsync(UserClaimSetKey);
-            transaction.SetRemoveAsync(UserConfirmedEmailSetKey, user.Email);
-            transaction.SetRemoveAsync(UserConfirmedPhoneNumberSetKey, user.PhoneNumber);
+            if (!string.IsNullOrEmpty(user.Email))
+            {
+                transaction.SetRemoveAsync(UserConfirmedEmailSetKey, user.Email);
+            }
+            if (!string.IsNullOrEmpty(user.PhoneNumber))
+            {
+                transaction.SetRemoveAsync(UserConfirmedPhoneNumberSetKey, user.PhoneNumber);
+            }
             transaction.SetRemoveAsync(UserClaimSetKey, userId);
             transaction.SetRemoveAsync(UserLockSetKey, userId);
 
@@ -107,7 +113,8 @@ namespace StackRedis.AspNet.Identity
         {
             IDatabase db = Database;
 
-            return JsonConvert.DeserializeObject<TUser>(await db.HashGetAsync(UserHashByIdKey, userId));
+            var user = await db.HashGetAsync(UserHashByIdKey, userId);
+            return !user.HasValue ? null : JsonConvert.DeserializeObject<TUser>(user);
         }
 
         public virtual async Task<TUser> FindByNameAsync(string userName)
@@ -118,7 +125,7 @@ namespace StackRedis.AspNet.Identity
 
             if (!string.IsNullOrEmpty(userId))
             {
-                return JsonConvert.DeserializeObject<TUser>(await db.HashGetAsync(UserHashByIdKey, userId));
+                return await FindByIdAsync(userId);
             }
             else
             {
